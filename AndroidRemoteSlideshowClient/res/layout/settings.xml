@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" android:padding="10dp">
+	
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/textView1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Server IP:" android:minWidth="120dp"/>
+	
+	        <EditText
+	            android:id="@+id/editTextIp"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10" >
+	
+	            <requestFocus />
+	        </EditText>
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/textView2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="ServerPort: " android:minWidth="120dp"/>
+	
+	        <EditText
+	            android:id="@+id/editTextPort"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10" android:inputType="number"/>
+	
+	    </LinearLayout>
+	
+	   <!-- <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/textView2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Landscape mode: " android:minWidth="120dp"/>
+	
+	        <ToggleButton
+	            android:id="@+id/toggleButtonLandscapeMode"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="ToggleButton" />
+	
+	    </LinearLayout>
+	     --> 
+	    
+	     <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Milliseconds between redrawing: " android:minWidth="120dp"/>
+	
+	        <EditText
+	            android:id="@+id/editTextMsBetweenRedrawing"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10" >
+	
+	            <requestFocus />
+	        </EditText>
+	
+	    </LinearLayout>
+	    
+	     <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Number of redraw steps: " android:minWidth="120dp"/>
+	
+	        <EditText
+	            android:id="@+id/editNumberOfRedrawSteps"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10" >
+	
+	            <requestFocus />
+	        </EditText>
+	
+	    </LinearLayout>
+	    
+	     <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Client ID: " android:minWidth="120dp"/>
+	
+	        <EditText
+	            android:id="@+id/editClientId"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10" >
+	
+	            <requestFocus />
+	        </EditText>
+	
+	    </LinearLayout>
+
+	     <LinearLayout
+	         android:layout_width="match_parent"
+	         android:layout_height="wrap_content" >
+
+	         <CheckBox
+	             android:id="@+id/checkBoxCloseApps"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:text="Try to close B&amp;N apps" />
+
+	     </LinearLayout>
+
+	     <LinearLayout
+	         android:layout_width="match_parent"
+	         android:layout_height="wrap_content" >
+
+	         <CheckBox
+	             android:id="@+id/checkBoxRefreshMode"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:text="Use advanced refresh mode" />
+
+	     </LinearLayout>
+	
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal" >
+	
+	        <Button
+	            android:id="@+id/button1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Ok" android:layout_weight="1" android:onClick="onOkClick"/>
+	
+	        <Button
+	            android:id="@+id/button2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Cancel" android:layout_weight="1" android:onClick="onCancelClick"/>
+	
+        </LinearLayout>
+	    <Button
+	        android:id="@+id/button3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_marginTop="50dp"
+	        android:onClick="onKillSwitchClicked"
+	        android:text="PRESS THIS BUTTON TO KILL THE APP" />
+    
+	</LinearLayout>
+
+</ScrollView>

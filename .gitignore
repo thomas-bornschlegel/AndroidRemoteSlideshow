@@ -1,0 +1,5 @@
+*.class
+AndroidRemoteSlideshowClient/bin
+AndroidRemoteSlideshowClient/gen
+AndroidRemoteSlideshowServer/bin
+.metadata
