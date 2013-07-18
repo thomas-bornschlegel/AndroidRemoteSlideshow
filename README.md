@@ -42,6 +42,9 @@ There exists a number of message codes that make the communication between serve
 
 Step by step tutorial
 ---
+
+This step by step tutorial is written for a setup that consists of a PC as the server and two Nooks as the client. You can find the .APK files that need to be installed on the Nook and the .JAR-file that has to be run on the PC in the directory "CompiledCode" of this repository.
+
 1. Find out the IP of your wireless adapter:
 Run ipconfig on the command line to obtain the IPv4-Address (neccessary for step 4). It will print something like this:
 
@@ -58,9 +61,9 @@ Run ipconfig on the command line to obtain the IPv4-Address (neccessary for step
 
 3. Copy the images to display to your nook SD card in the folder "uni_bamberg" on the SD card. (Note that when you connect the nook to your PC two directories are mounted: the SD-card and the internal storage! The SD-Card has more space than the internal storage.) Keep the same images on your PC at C:\uni_bamberg. You can also change these directories but they have to be named the same on the nook and on the PC.
 
-4. Turn on the nook (Choose ADW.Launcher if you are promted to choose your launcher). The app "NookImageDisplayer" will start automatically. Tap on the text that appears on the nook. Setup the IP and Port of your machine. The port is 5060 by default. The IP is the IP from step 1.
+4. Turn on the nook (Choose ADW.Launcher if you are prompted to choose your launcher). The app will start automatically. Tap on the text that appears on the nook. Setup the IP and Port of your machine. The port is 5060 by default. The IP is the IP from step 1.
 
-5. Start the server with "java -jar NookConnector". The Nook should connect in at most 20 seconds.
+5. Start the server with "java -jar AndroidRemoteSlideshowServer". The Nook should connect in at most 20 seconds.
 
 6. You will be prompted if you want to connect a second Nook. If you want to do so enter "y" and follow the steps 4 and 5. After that commence with step 7. The first nook will display the first image, the second nook the second image. The third image will be displayed by the first nook, the forth by the second nook. And so on...
 
