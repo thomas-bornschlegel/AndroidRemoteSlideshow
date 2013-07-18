@@ -15,7 +15,7 @@ public class PrefsHelper {
 
     // Name of settings
     private static final String PREFS_NAME = "nook settings";
-    // Varibables for individual settings:
+    // Variables for individual settings:
     private static final String PREF_CLIENT_ID = "client id";
     private static final String PREF_SERVER_IP = "server ip";
     private static final String PREF_SERVER_PORT = "server port";
@@ -131,13 +131,5 @@ public class PrefsHelper {
         editor.putBoolean(key, value);
         editor.commit();
     }
-
-    // private int portFrom = 1024;
-    // private int portTo = 49151;
-    //
-    // private int getRandomPortNumber() {
-    // // valid ports: from 1024 to 49151
-    // return (int) (Math.random() * (portTo - portFrom) + portFrom);
-    // }
 
 }

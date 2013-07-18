@@ -63,6 +63,11 @@ public class SettingsActivity extends Activity {
         finish();
     }
 
+    /**
+     * Kills the App completely, so that all running threads are destroyed.
+     * 
+     * @param v
+     */
     public void onKillSwitchClicked(View v) {
         Intent i = new Intent();
         i.putExtra(NookImageDisplayerActivity.EXTRA_EXIT_APP, true);
