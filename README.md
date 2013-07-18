@@ -67,8 +67,3 @@ Step by step tutorial
 7. Press enter for the next image. You will receive a message and see if the image is displayed on the nook. After you received the message from your Nook on the PC give the nook some time to refresh the screen and display the image. This can take a few seconds.
 
 8. After the last image was displayed you can chooose if you want to quit or restart the experiment.
-
-
-
-Todo
-![Image 1](./readme-images/octocat_fork.png "Image title")
