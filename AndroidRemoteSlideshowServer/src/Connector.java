@@ -37,11 +37,12 @@ public class Connector {
         return clientsMap.get(clientId);
     }
 
-    private void waitForClientConnection() throws IOException {
+    private int waitForClientConnection() throws IOException {
         ClientObject client = new ClientObject(serverSocket.accept());
         receiveIdForClient(client);
         printClientConnected(client.getClientId(), client);
         clientsMap.put(client.getClientId(), client);
+        return client.getClientId();
     }
 
     private class ServerThread extends Thread {
@@ -52,7 +53,6 @@ public class Connector {
 
                 serverSocket = new ServerSocket(port);
                 System.out.println("Server started successfully.");
-                boolean connectSecondClient = true;
 
                 System.out.println("Waiting for first client...");
                 waitForClientConnection();
@@ -63,35 +63,40 @@ public class Connector {
                     e1.printStackTrace();
                 }
 
+                System.out.println("Do you want to connect a second client?");
+                System.out.println("Enter \"y\" to do so, or \"n\" otherwise:");
+                boolean connectSecondClient = getYesNoFromCommandLine(scanner);
+
                 if (connectSecondClient) {
                     waitForClientConnection();
                 }
 
                 // TESTs FOR NEW METHODS BEGIN:
-                int clientOneId = 1;
-                int clientTwoId = 2;
 
-                System.out.println("Client 1 connected? " + isConnected(getClient(clientOneId)));
-                System.out.println("Client 2 connected? " + isConnected(getClient(clientTwoId)));
-                System.out.println("Both Clients connected? " + areClientsConnectedProperly());
-                System.out
-                        .println("Displaying blank screen on client 1: " + displayBlankScreen(getClient(clientOneId)));
-
-                String directory = "/home/thomas/nook/stimuli_new";
-                switchImageDirectory(directory);
-                System.out.println("Image count of client1: " + countImages(getClient(clientOneId)));
-                ArrayList<String> images = getImagesInDirectory(directory);
-                String folderName = getOnlyDeepestFolder(directory);
-                String imageFileName = images.get(0);
-                boolean imageDisplayed = displayImage(folderName, imageFileName, getClient(clientOneId));
-                System.out.println("Displying image " + imageFileName + ": " + imageDisplayed);
+                // int clientOneId = 1;
+                // int clientTwoId = 2;
+                //
+                // System.out.println("Client 1 connected? " + isConnected(getClient(clientOneId)));
+                // System.out.println("Client 2 connected? " + isConnected(getClient(clientTwoId)));
+                // System.out.println("Both Clients connected? " + areClientsConnectedProperly());
+                // System.out
+                // .println("Displaying blank screen on client 1: " + displayBlankScreen(getClient(clientOneId)));
+                //
+                // String directory = "/home/thomas/nook/stimuli_new";
+                // switchImageDirectory(directory);
+                // System.out.println("Image count of client1: " + countImages(getClient(clientOneId)));
+                // ArrayList<String> images = getImagesInDirectory(directory);
+                // String folderName = getOnlyDeepestFolder(directory);
+                // String imageFileName = images.get(0);
+                // boolean imageDisplayed = displayImage(folderName, imageFileName, getClient(clientOneId));
+                // System.out.println("Displaying image " + imageFileName + ": " + imageDisplayed);
 
                 // TESTs FOR NEW METHODS END
 
-                // Old Code to display images in a row (on ENTER press) START
+                // Code to display images in a row (on ENTER press) BEGIN
                 displayNextImage(scanner);
                 scanner.close();
-                // Old Code to display images in a row END
+                // Code to display images in a row END
 
                 // Send exit messages to clients:
                 for (ClientObject client : clientsMap.values()) {
@@ -201,6 +206,8 @@ public class Connector {
 
         private void displayNextImage(Scanner scanner) throws IOException {
 
+            System.out.println("You can exit at any time by entering \"quit\" and pressing Enter.");
+
             int minClientId = Integer.MAX_VALUE;
             int maxClientId = Integer.MIN_VALUE;
 
@@ -251,7 +258,7 @@ public class Connector {
 
             boolean noOptionsSelected = true;
 
-            System.out.println("Displayed last image. Please enter:");
+            System.out.println("Finished displaying images. Please enter:");
             while (noOptionsSelected) {
                 System.out.println("\"r\" to restart with the first image.");
                 System.out.println("\"q\" to close the server and terminate the experiment.");
@@ -299,7 +306,7 @@ public class Connector {
     }
 
     /**
-     * @return true if both clients are connected properly to this Connector.
+     * @return true if clients are connected properly to this Connector.
      * */
     private boolean areClientsConnectedProperly() {
         for (ClientObject client : clientsMap.values()) {

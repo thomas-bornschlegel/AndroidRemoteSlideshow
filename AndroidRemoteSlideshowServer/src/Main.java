@@ -14,7 +14,7 @@ public class Main {
          * 
          * Add Args parsing:
          * 
-         * java NookConnector --port 1235 --imagedir C:\\uni
+         * java Main --port 1235 --imagedir C:\\uni
          * 
          * Started Server on port 1235...
          * Press Enter to display the next image: 1.png
@@ -28,9 +28,10 @@ public class Main {
         boolean error = false;
         
         if(args.length<4){
-            String[] myArgs = {"--port", "5060", "--imagedir", "/home/thomas/nook/stimuli_new"};
+            String defaultDir = "/home/thomas/nook/stimuli_new";
+            String[] myArgs = {"--port", "5060", "--imagedir", defaultDir};
             args = myArgs;
-            System.out.println("No arguments given. Starting with default arguments: java NookConnector --port 5060 --imagedir C:\\uni_bamberg");
+            System.out.println("No arguments given. Starting with default arguments: java Main --port 5060 --imagedir "+defaultDir);
         } 
         try {
             int port = Integer.valueOf(args[1]);
@@ -39,7 +40,7 @@ public class Main {
             Connector connector = new Connector(port, dir);
         } catch (Exception e) {
             error = true;
-            System.out.println("Wrong arguments given. Please start with no arguments or the default arguments: java NookConnector --port 5060 --imagedir C:\\uni_bamberg");
+            System.out.println("Wrong arguments given. Please start with no arguments or arguments of the form: java Main --port 5060 --imagedir C:\\uni_bamberg");
             e.printStackTrace();
         }
         
