@@ -33,10 +33,6 @@ public class Connector {
         // new ClientThread().start();
     }
 
-    private ClientObject getClient(int clientId) {
-        return clientsMap.get(clientId);
-    }
-
     private int waitForClientConnection() throws IOException {
         ClientObject client = new ClientObject(serverSocket.accept());
         receiveIdForClient(client);
@@ -45,6 +41,10 @@ public class Connector {
         return client.getClientId();
     }
 
+    /**
+     * @author Thomas Bornschlegel
+     * 
+     */
     private class ServerThread extends Thread {
         @Override
         public void run() {
@@ -136,6 +136,13 @@ public class Connector {
             }
         }
 
+        /**
+         * Sends a remote message to all clients. The clients will use the given directory to display the next images.
+         * 
+         * @param directory
+         *            the name of the directory to use. Note that this variable contains only the folder name and not a
+         *            whole path!
+         */
         private void switchImageDirectory(String directory) {
             dirName = getOnlyDeepestFolder(directory);
             for (ClientObject client : clientsMap.values()) {
@@ -154,6 +161,13 @@ public class Connector {
 
         }
 
+        /**
+         * Displays a blank screen on the given client.
+         * 
+         * @param client
+         *            the client that should display the blank screen
+         * @return true if the client is displaying a blank screen, false if something went wrong.
+         */
         private boolean displayBlankScreen(ClientObject client) {
             sendMessage(RemoteMessageIds.MESSAGE_SHOW_BLANK_SCREEN, "", client);
             try {
@@ -167,7 +181,7 @@ public class Connector {
         }
 
         /**
-         * @return the number of images in the current directory on the client, or -1 if the number could not be
+         * @return the number of images in the current directory on the given client, or -1 if the number could not be
          *         obtained.
          */
         private int countImages(ClientObject client) {
@@ -184,6 +198,8 @@ public class Connector {
         }
 
         /**
+         * Displays the image in the given folder on the given client.
+         * 
          * @param dirName
          *            the name of the folder in which the image is located in. Not the path! Example: "uni_bamberg"
          * @param imageFileName
@@ -204,6 +220,12 @@ public class Connector {
             }
         }
 
+        /**
+         * Waits for the user to press enter. On each enter-press the next image in the current image is shown an a
+         * client. The client with the smallest ID is the first client that displays the first image. The second image
+         * is shown on the client with the second smallest ID and so on. After all clients showed an image it starts
+         * again with the first client.
+         */
         private void displayNextImage(Scanner scanner) throws IOException {
 
             System.out.println("You can exit at any time by entering \"quit\" and pressing Enter.");
@@ -280,6 +302,16 @@ public class Connector {
 
         }
 
+        /**
+         * Sends a message to the given client
+         * 
+         * @param messageCode
+         *            the message code as defined in {@link RemoteMEssageIds}
+         * @param messageContent
+         *            the content of the message
+         * @param client
+         *            the client to communicate with
+         */
         private void sendMessage(String messageCode, String messageContent, ClientObject client) {
             sendMessage(messageCode, messageContent, client.getOutputToServer());
         }
@@ -291,6 +323,9 @@ public class Connector {
 
     }
 
+    /**
+     * Asks the given client to send its ID to the server. Stores the ID temporarily on the server.
+     */
     private void receiveIdForClient(ClientObject client) throws IOException {
         String response = client.getInputFromClient().readLine();
         response = response.replace(RemoteMessageIds.MESSAGE_SEND_CLIENT_ID + ":", "");
@@ -298,6 +333,9 @@ public class Connector {
         client.setClientId(answer);
     }
 
+    /**
+     * Shows it the given client is connected and displays its address.
+     */
     private void printClientConnected(int clientId, ClientObject client) {
         System.out.println("Client with id " + clientId + " connected.");
         System.out.println("Computer Socket Address: " + client.getSocket().getLocalSocketAddress().toString());
@@ -306,7 +344,7 @@ public class Connector {
     }
 
     /**
-     * @return true if clients are connected properly to this Connector.
+     * @return true if all clients are connected properly to this Connector.
      * */
     private boolean areClientsConnectedProperly() {
         for (ClientObject client : clientsMap.values()) {
@@ -334,6 +372,9 @@ public class Connector {
         return !socket.isClosed() && socket.isConnected();
     }
 
+    /**
+     * @return true if the user entered "y", false if the user entered "n"
+     */
     private boolean getYesNoFromCommandLine(Scanner scanner) {
         boolean noOptionsSelected = true;
 
@@ -365,8 +406,10 @@ public class Connector {
     }
 
     /**
+     * 
      * @param dirName
      *            for example "C:\\uni_bamberg"
+     * @return the names of all images (png or jpg) in the given directory
      * */
     private ArrayList<String> getImagesInDirectory(String dirName) {
         File file = new File(dirName);
