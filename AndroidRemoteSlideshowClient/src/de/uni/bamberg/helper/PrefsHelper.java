@@ -23,7 +23,6 @@ public class PrefsHelper {
     private static final String PREF_MS_BETWEEN_REDRAWING = "redraw timing";
     private static final String PREF_NUMBER_OF_REDRAW_STEPS = "redraw steps";
     private static final String PREF_TIMESTAMP_OF_LAST_CONNECTION = "last connection timestamp";
-    private static final String PREF_CLOSE_APPS = "close b&n apps";
     private static final String PREF_ADVANCED_REFRESH = "advanced refresh";
 
     public static boolean getExitApp(Context context) {
@@ -61,11 +60,6 @@ public class PrefsHelper {
         return prefs.getLong(PREF_TIMESTAMP_OF_LAST_CONNECTION, 0);
     }
 
-    public static boolean getCloseBnApps(Context context) {
-        SharedPreferences prefs = getSharedPreferences(context);
-        return prefs.getBoolean(PREF_CLOSE_APPS, false);
-    }
-
     public static boolean getAdvancedRefresh(Context context) {
         SharedPreferences prefs = getSharedPreferences(context);
         return prefs.getBoolean(PREF_ADVANCED_REFRESH, false);
@@ -75,7 +69,7 @@ public class PrefsHelper {
      * Stores all settings using SharedPreferences.
      */
     public static void storeSettings(Context context, String serverIp, int serverPort, long msBetweenRedrawing,
-            int numberOfRedrawSteps, int clientId, boolean closeBnApps, boolean advancedRefresh) {
+            int numberOfRedrawSteps, int clientId, boolean advancedRefresh) {
         SharedPreferences prefs = getSharedPreferences(context);
         Editor editor = prefs.edit();
         editor.putString(PREF_SERVER_IP, serverIp);
@@ -84,7 +78,6 @@ public class PrefsHelper {
         editor.putInt(PREF_NUMBER_OF_REDRAW_STEPS, numberOfRedrawSteps);
         editor.putInt(PREF_CLIENT_ID, clientId);
         editor.putBoolean(PREF_ADVANCED_REFRESH, advancedRefresh);
-        editor.putBoolean(PREF_CLOSE_APPS, closeBnApps);
         editor.commit();
     }
 

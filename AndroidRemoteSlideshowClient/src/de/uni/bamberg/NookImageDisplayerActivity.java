@@ -31,7 +31,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import de.uni.bamberg.helper.AndroidShellHelper;
 import de.uni.bamberg.helper.CustomLog;
 import de.uni.bamberg.helper.N2EpdController;
 import de.uni.bamberg.helper.PrefsHelper;
@@ -84,25 +83,9 @@ public class NookImageDisplayerActivity extends Activity {
         new EstablishConnection().execute();
 
         initWindowFlags();
-        if (PrefsHelper.getCloseBnApps(this)) {
-            closeUnneccessaryPrograms();
-        }
         if (PrefsHelper.getAdvancedRefresh(this)) {
             N2EpdController.setGL16Mode();
         }
-    }
-
-    private void closeUnneccessaryPrograms() {
-        AndroidShellHelper shell = new AndroidShellHelper();
-        shell.closeProgram("com.bn.nook.home");
-        shell.closeProgram("com.bn.nook.affiledownloadservice");
-        shell.closeProgram("com.bn.cloud.svc:svc");
-        shell.closeProgram("com.bn.nook.reader.activities");
-        shell.closeProgram("com.bn.waveformdownloader.svc");
-        shell.closeProgram("com.bn.demomode");
-        shell.closeProgram("com.android.email");
-        shell.closeProgram("com.android.calendar");
-        shell.closeProgram("com.amazon.venezia");
     }
 
     private void initWindowFlags() {

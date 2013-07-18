@@ -21,7 +21,6 @@ public class SettingsActivity extends Activity {
     private EditText editTextMsBetweenRedrawing;
     private EditText editNumberOfRedrawSteps;
     private EditText editClientId;
-    private CheckBox checkCloseApps;
     private CheckBox checkAdvancedRefresh;
 
     @Override
@@ -33,14 +32,12 @@ public class SettingsActivity extends Activity {
         editTextMsBetweenRedrawing = (EditText) findViewById(R.id.editTextMsBetweenRedrawing);
         editNumberOfRedrawSteps = (EditText) findViewById(R.id.editNumberOfRedrawSteps);
         editClientId = (EditText) findViewById(R.id.editClientId);
-        checkCloseApps = (CheckBox) findViewById(R.id.checkBoxCloseApps);
         checkAdvancedRefresh = (CheckBox) findViewById(R.id.checkBoxRefreshMode);
         editTextIp.setText(PrefsHelper.getServerIp(this));
         editTextPort.setText(String.valueOf(PrefsHelper.getServerPort(this)));
         editTextMsBetweenRedrawing.setText(String.valueOf(PrefsHelper.getMsBetweenRedrawing(this)));
         editNumberOfRedrawSteps.setText(String.valueOf(PrefsHelper.getNumberOfRedrawSteps(this)));
         editClientId.setText(String.valueOf(PrefsHelper.getClientId(this)));
-        checkCloseApps.setChecked(PrefsHelper.getCloseBnApps(this));
         checkAdvancedRefresh.setChecked(PrefsHelper.getAdvancedRefresh(this));
     }
 
@@ -50,11 +47,10 @@ public class SettingsActivity extends Activity {
         long msBetweenRedrawing = Long.valueOf(editTextMsBetweenRedrawing.getText().toString());
         int numberOfRedrawSteps = Integer.valueOf(editNumberOfRedrawSteps.getText().toString());
         int clientId = Integer.valueOf(editClientId.getText().toString());
-        boolean closeApps = checkCloseApps.isChecked();
         boolean advancedRefresh = checkAdvancedRefresh.isChecked();
 
         PrefsHelper.storeSettings(getApplicationContext(), serverIp, serverPort, msBetweenRedrawing,
-                numberOfRedrawSteps, clientId, closeApps, advancedRefresh);
+                numberOfRedrawSteps, clientId, advancedRefresh);
 
         finish();
     }
