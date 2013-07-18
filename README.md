@@ -63,10 +63,10 @@ Run ipconfig on the command line to obtain the IPv4-Address (neccessary for step
 
 4. Turn on the nook (Choose ADW.Launcher if you are prompted to choose your launcher). The app will start automatically. Tap on the text that appears on the nook. Setup the IP and Port of your machine. The port is 5060 by default. The IP is the IP from step 1.
 
-5. Start the server with "java -jar AndroidRemoteSlideshowServer". The Nook should connect in at most 20 seconds.
+5. Start the server with "java -jar AndroidRemoteSlideshowServer". The Nook should connect in at most 20 seconds. If you do not want to start with the default options you can specify the port and the image directory by starting the server with "java Main --port 5060 --imagedir C:\your_image_dir". If you are running the project under Linux this will look like this: "java Main --port 5060 --imagedir /home/your_image_dir".
 
 6. You will be prompted if you want to connect a second Nook. If you want to do so enter "y" and follow the steps 4 and 5. After that commence with step 7. The first nook will display the first image, the second nook the second image. The third image will be displayed by the first nook, the forth by the second nook. And so on...
 
-7. Press enter for the next image. You will receive a message and see if the image is displayed on the nook. After you received the message from your Nook on the PC give the nook some time to refresh the screen and display the image. This can take a few seconds.
+7. Press enter for the next image. You will receive a message and see if the image is displayed on the nook. After you received the message from your Nook on the PC give the nook some time to refresh the screen and display the image. This can take a few seconds. To display the next image press enter again. To quit you can enter "quit" at any time and press enter.
 
 8. After the last image was displayed you can chooose if you want to quit or restart the experiment.
