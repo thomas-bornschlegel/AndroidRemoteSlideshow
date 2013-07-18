@@ -43,7 +43,7 @@ There exists a number of message codes that make the communication between serve
 Step by step tutorial
 ---
 1. Find out the IP of your wireless adapter:
-- Run ipconfig on the command line to obtain the IPv4-Address (neccessary for step 4). It will print something like this:
+Run ipconfig on the command line to obtain the IPv4-Address (neccessary for step 4). It will print something like this:
 
 	<pre>
 	Drahtlos-LAN-Adapter Drahtlosnetzwerkverbindung:
