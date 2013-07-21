@@ -434,66 +434,6 @@ public class NookImageDisplayerActivity extends Activity {
         }
     }
 
-    // private static final String FILE_NAME_EXIT_APP = "killnook.txt";
-    //
-    // private class KillAppTask extends AsyncTask<Void, Void, Void> {
-    //
-    // @Override
-    // protected Void doInBackground(Void... params) {
-    // while (!globalExit) {
-    // try {
-    // String path = Environment.getExternalStorageDirectory().getPath() + "/" + FILE_NAME_EXIT_APP;
-    // File file = new File(path);
-    //
-    // if (file.exists()) {
-    // boolean delete = file.delete();
-    // CustomLog.d("Exiting app because of file " + FILE_NAME_EXIT_APP
-    // + " on sd-card. Deleted file: " + delete);
-    // globalExit = true;
-    // break;
-    // } else {
-    // CustomLog.d("File does NOT exist");
-    // }
-    //
-    // Thread.sleep(30000);
-    // } catch (InterruptedException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    // return null;
-    // }
-    //
-    // } // private static final String FILE_NAME_EXIT_APP = "killnook.txt";
-    //
-    // private class KillAppTask extends AsyncTask<Void, Void, Void> {
-    //
-    // @Override
-    // protected Void doInBackground(Void... params) {
-    // while (!globalExit) {
-    // try {
-    // String path = Environment.getExternalStorageDirectory().getPath() + "/" + FILE_NAME_EXIT_APP;
-    // File file = new File(path);
-    //
-    // if (file.exists()) {
-    // boolean delete = file.delete();
-    // CustomLog.d("Exiting app because of file " + FILE_NAME_EXIT_APP
-    // + " on sd-card. Deleted file: " + delete);
-    // globalExit = true;
-    // break;
-    // } else {
-    // CustomLog.d("File does NOT exist");
-    // }
-    //
-    // Thread.sleep(30000);
-    // } catch (InterruptedException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    // return null;
-    // }
-    //
-    // }
-
     private boolean isSdReadable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
