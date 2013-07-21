@@ -1,3 +1,5 @@
+package de.uni.bamberg.helper;
+
 /**
  * Definition of message ids that are used to exchanged data between the Android Client and the Java Server over TCP
  * sockets.
@@ -5,7 +7,7 @@
  * @author Thomas Bornschlegel
  * 
  */
-public class RemoteMessageIds {
+public class RemoteMessageCodes {
 
     public final static String MESSAGE_USE_DIRECTORY = "directory";
     public final static String MESSAGE_DISPLAY_IMAGE = "image";

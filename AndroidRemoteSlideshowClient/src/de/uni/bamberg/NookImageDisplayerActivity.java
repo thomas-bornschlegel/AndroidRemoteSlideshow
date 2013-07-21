@@ -33,7 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.uni.bamberg.helper.CustomLog;
 import de.uni.bamberg.helper.PrefsHelper;
-import de.uni.bamberg.helper.RemoteMessageIds;
+import de.uni.bamberg.helper.RemoteMessageCodes;
 
 /**
  * Main activity that displays the remote slideshow and communicates with the Java server.
@@ -189,7 +189,7 @@ public class NookImageDisplayerActivity extends Activity {
                     in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
                     out = new PrintWriter(remote.getOutputStream(), true);
                     // Send our client ID to the server:
-                    out.write(RemoteMessageIds.MESSAGE_SEND_CLIENT_ID + ":"
+                    out.write(RemoteMessageCodes.MESSAGE_SEND_CLIENT_ID + ":"
                             + PrefsHelper.getClientId(getApplicationContext()) + "\n");
                     out.flush();
                     // Save the timestamp of this connection to prevent double connections:
@@ -270,14 +270,14 @@ public class NookImageDisplayerActivity extends Activity {
                         read = read.replaceAll("\n", "");
                         CustomLog.d("read: " + read);
                         // Check which message code was sent and handle the message:
-                        if (read.startsWith(RemoteMessageIds.MESSAGE_EXIT)) {
+                        if (read.startsWith(RemoteMessageCodes.MESSAGE_EXIT)) {
                             // Server told as to close the connection:
                             finish = true;
                             String message = "Received exit signal.";
                             CustomLog.d(message);
                             closeServerSocket();
                             break;
-                        } else if (read.startsWith(RemoteMessageIds.MESSAGE_SHOW_BLANK_SCREEN)) {
+                        } else if (read.startsWith(RemoteMessageCodes.MESSAGE_SHOW_BLANK_SCREEN)) {
                             // Show blank screen via handler (we have to use the handler because this current thread
                             // cannot touch the UI thread):
                             Message m = new Message();
@@ -285,7 +285,7 @@ public class NookImageDisplayerActivity extends Activity {
                             m.what = handlerIdNextImage;
                             handler.sendMessage(m);
                             CustomLog.d("Starting to display blank screen.");
-                        } else if (read.startsWith(RemoteMessageIds.MESSAGE_DISPLAY_IMAGE)) {
+                        } else if (read.startsWith(RemoteMessageCodes.MESSAGE_DISPLAY_IMAGE)) {
                             // Display the image specified by the message from the server (also via handler):
                             Message m = new Message();
                             String image = read.replace("image:", "");
@@ -293,14 +293,14 @@ public class NookImageDisplayerActivity extends Activity {
                             m.what = handlerIdNextImage;
                             handler.sendMessage(m);
                             CustomLog.d("Starting to display image: " + image);
-                        } else if (read.startsWith(RemoteMessageIds.MESSAGE_USE_DIRECTORY)) {
+                        } else if (read.startsWith(RemoteMessageCodes.MESSAGE_USE_DIRECTORY)) {
                             // Change the directory in which images are located:
                             String directory = read.replace("directory:", "");
                             currentDirectory = directory;
                             out.write("Set current directory to : " + currentDirectory + "\n");
                             out.flush();
                             CustomLog.d("Set current directory to : " + currentDirectory);
-                        } else if (read.startsWith(RemoteMessageIds.MESSAGE_COUNT_IMAGES)) {
+                        } else if (read.startsWith(RemoteMessageCodes.MESSAGE_COUNT_IMAGES)) {
                             // Tell the server how many images are in the currently used image directory:
                             String path = Environment.getExternalStorageDirectory().getPath() + "/" + currentDirectory;
                             try {
@@ -440,7 +440,7 @@ public class NookImageDisplayerActivity extends Activity {
                             Uri imageUri = Uri.parse(path);
                             imageView.setVisibility(View.VISIBLE);
                             imageView.setImageURI(imageUri);
-                            out.write(RemoteMessageIds.MESSAGE_CLIENT_DISPLAYS_IMAGE + ":" + fileName + "\n");
+                            out.write(RemoteMessageCodes.MESSAGE_CLIENT_DISPLAYS_IMAGE + ":" + fileName + "\n");
                             out.flush();
                             CustomLog.d("Displaying image: " + fileName);
                         } else {

@@ -101,7 +101,7 @@ public class Connector {
                 // Send exit messages to clients:
                 for (ClientObject client : clientsMap.values()) {
                     if (isConnected(client)) {
-                        sendMessage(RemoteMessageIds.MESSAGE_EXIT, "true", client);
+                        sendMessage(RemoteMessageCodes.MESSAGE_EXIT, "true", client);
                     }
                 }
 
@@ -148,7 +148,7 @@ public class Connector {
             for (ClientObject client : clientsMap.values()) {
                 if (isConnected(client)) {
                     try {
-                        sendMessage(RemoteMessageIds.MESSAGE_USE_DIRECTORY, dirName, client.getOutputToServer());
+                        sendMessage(RemoteMessageCodes.MESSAGE_USE_DIRECTORY, dirName, client.getOutputToServer());
                         String answer = client.getInputFromClient().readLine();
                         System.out.println("Client " + client.getClientId() + " answers: " + answer);
                     } catch (IOException e) {
@@ -169,7 +169,7 @@ public class Connector {
          * @return true if the client is displaying a blank screen, false if something went wrong.
          */
         private boolean displayBlankScreen(ClientObject client) {
-            sendMessage(RemoteMessageIds.MESSAGE_SHOW_BLANK_SCREEN, "", client);
+            sendMessage(RemoteMessageCodes.MESSAGE_SHOW_BLANK_SCREEN, "", client);
             try {
                 String response = client.getInputFromClient().readLine();
                 return response.startsWith("displaying blank screen");
@@ -186,7 +186,7 @@ public class Connector {
          */
         private int countImages(ClientObject client) {
             int answer = -1;
-            sendMessage(RemoteMessageIds.MESSAGE_COUNT_IMAGES, "", client);
+            sendMessage(RemoteMessageCodes.MESSAGE_COUNT_IMAGES, "", client);
             try {
                 String response = client.getInputFromClient().readLine();
                 answer = Integer.parseInt(response);
@@ -210,10 +210,10 @@ public class Connector {
          * @return true if the client send a positive response after displaying the image
          * */
         private boolean displayImage(String folderName, String imageFileName, ClientObject client) throws IOException {
-            sendMessage(RemoteMessageIds.MESSAGE_DISPLAY_IMAGE, dirName + "/" + imageFileName, client);
+            sendMessage(RemoteMessageCodes.MESSAGE_DISPLAY_IMAGE, dirName + "/" + imageFileName, client);
             String answer = client.getInputFromClient().readLine();
 
-            if (answer.equals(RemoteMessageIds.MESSAGE_CLIENT_DISPLAYS_IMAGE + ":" + folderName + "/" + imageFileName)) {
+            if (answer.equals(RemoteMessageCodes.MESSAGE_CLIENT_DISPLAYS_IMAGE + ":" + folderName + "/" + imageFileName)) {
                 return true;
             } else {
                 return false;
@@ -328,7 +328,7 @@ public class Connector {
      */
     private void receiveIdForClient(ClientObject client) throws IOException {
         String response = client.getInputFromClient().readLine();
-        response = response.replace(RemoteMessageIds.MESSAGE_SEND_CLIENT_ID + ":", "");
+        response = response.replace(RemoteMessageCodes.MESSAGE_SEND_CLIENT_ID + ":", "");
         int answer = Integer.parseInt(response);
         client.setClientId(answer);
     }
