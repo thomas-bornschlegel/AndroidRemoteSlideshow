@@ -20,6 +20,9 @@ There exists a number of message codes that make the communication between serve
 		<th>Message Code</th><th>Description</th><th>Possible Values</th>
 	</tr>
 	<tr>
+		<td>clientId</td><td>Sends the ID of the client to the server. Sent from the client to the server. </td><td>1</td>
+	</tr>
+	<tr>
 		<td>directory</td><td>Lets the client use the given foldername from the SD-Card to display images. Sent from the server to the client.</td><td>my_image_folder</td>
 	</tr>
 	<tr>
@@ -29,17 +32,15 @@ There exists a number of message codes that make the communication between serve
 		<td>diplaying</td><td>Confirms that the image in the value part of the message is shown on the client. Sent from the client to the server.</td><td>mypicture1.png</td>
 	</tr>
 	<tr>
+		<td>blankScreen</td><td>Makes the client display a blank screen. Sent from the server to the client. </td><td>NO VALUE</td>
+	</tr>
+	<tr>
 		<td>showImageCount</td><td>The client responds with a string that contains the number of images in the current directory e.g. "23". Sent from the server to the client.</td><td>NO VALUE</td>
 	</tr>
 	<tr>
 		<td>exit</td><td>Closes the app. Sent from the server to the client. </td><td>NO VALUE</td>
 	</tr>
-	<tr>
-		<td>clientId</td><td>Sends the ID of the client to the server. Sent from the client to the server. </td><td>1</td>
-	</tr>
-	<tr>
-		<td>blankScreen</td><td>Makes the client display a blank screen. Sent from the server to the client. </td><td>NO VALUE</td>
-	</tr>
+
 </table>
 
 
