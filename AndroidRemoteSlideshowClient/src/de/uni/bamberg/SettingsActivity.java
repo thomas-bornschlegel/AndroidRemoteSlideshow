@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import de.uni.bamberg.helper.PrefsHelper;
 
@@ -21,24 +20,23 @@ public class SettingsActivity extends Activity {
     private EditText editTextMsBetweenRedrawing;
     private EditText editNumberOfRedrawSteps;
     private EditText editClientId;
-    private CheckBox checkAdvancedRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+        // Find the views:
         editTextIp = (EditText) findViewById(R.id.editTextIp);
         editTextPort = (EditText) findViewById(R.id.editTextPort);
         editTextMsBetweenRedrawing = (EditText) findViewById(R.id.editTextMsBetweenRedrawing);
         editNumberOfRedrawSteps = (EditText) findViewById(R.id.editNumberOfRedrawSteps);
         editClientId = (EditText) findViewById(R.id.editClientId);
-        checkAdvancedRefresh = (CheckBox) findViewById(R.id.checkBoxRefreshMode);
+        // Set the currently stored settings:
         editTextIp.setText(PrefsHelper.getServerIp(this));
         editTextPort.setText(String.valueOf(PrefsHelper.getServerPort(this)));
         editTextMsBetweenRedrawing.setText(String.valueOf(PrefsHelper.getMsBetweenRedrawing(this)));
         editNumberOfRedrawSteps.setText(String.valueOf(PrefsHelper.getNumberOfRedrawSteps(this)));
         editClientId.setText(String.valueOf(PrefsHelper.getClientId(this)));
-        checkAdvancedRefresh.setChecked(PrefsHelper.getAdvancedRefresh(this));
     }
 
     public void onOkClick(View v) {
@@ -47,10 +45,9 @@ public class SettingsActivity extends Activity {
         long msBetweenRedrawing = Long.valueOf(editTextMsBetweenRedrawing.getText().toString());
         int numberOfRedrawSteps = Integer.valueOf(editNumberOfRedrawSteps.getText().toString());
         int clientId = Integer.valueOf(editClientId.getText().toString());
-        boolean advancedRefresh = checkAdvancedRefresh.isChecked();
 
         PrefsHelper.storeSettings(getApplicationContext(), serverIp, serverPort, msBetweenRedrawing,
-                numberOfRedrawSteps, clientId, advancedRefresh);
+                numberOfRedrawSteps, clientId);
 
         finish();
     }

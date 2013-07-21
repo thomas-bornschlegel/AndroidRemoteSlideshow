@@ -32,7 +32,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.uni.bamberg.helper.CustomLog;
-import de.uni.bamberg.helper.N2EpdController;
 import de.uni.bamberg.helper.PrefsHelper;
 import de.uni.bamberg.helper.RemoteMessageIds;
 
@@ -83,9 +82,6 @@ public class NookImageDisplayerActivity extends Activity {
         new EstablishConnection().execute();
 
         initWindowFlags();
-        if (PrefsHelper.getAdvancedRefresh(this)) {
-            N2EpdController.setGL16Mode();
-        }
     }
 
     private void initWindowFlags() {
