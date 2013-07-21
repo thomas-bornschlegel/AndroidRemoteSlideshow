@@ -43,6 +43,12 @@ There exists a number of message codes that make the communication between serve
 
 </table>
 
+Sequence diagram
+---
+The following sequence diagram shows a minimal workflow. It consists of the connection establishment, the display of one image and the exit call from the server to the client.
+
+![Workflow](readme-images/diagram-client-server.png)
+
 
 Step by step tutorial
 ---
