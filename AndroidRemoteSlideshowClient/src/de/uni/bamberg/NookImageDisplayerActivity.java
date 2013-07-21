@@ -41,27 +41,42 @@ import de.uni.bamberg.helper.RemoteMessageIds;
  * @author Thomas Bornschlegel
  * 
  */
+/**
+ * @author Thomas Bornschlegel
+ * 
+ */
 public class NookImageDisplayerActivity extends Activity {
 
+    // UI Elements:
     private ImageView imageView;
     private TextView textView;
     private LinearLayout linearLayout;
+
+    // Constants for connection attempts:
     private int timeoutForServerConnectionInSeconds = 10;
-    private int connectionAttemptCount = 1;
-    private boolean globalExit = false;
     private final long thresholdBetweenConnectionEstablishingInMs = 40000;
 
+    // Further constants:
+    private int REQUEST_CODE_SETTINGS_ACTIVITY = 124357;
+    public static final String EXTRA_EXIT_APP = "exit app extra";
+    private String currentDirectory = "not set";
+    private String blankScreenConstant = "blankScreen#+.,.";
+
+    // Variables to save the current state:
+    private int connectionAttemptCount = 1;
+    private boolean globalExit = false;
+    private int randomInstanceNumber = -1;
+
+    // Handler codes to change the displayed image/text:
     private int handlerIdNextImage = 1;
     private int handlerIdRefreshScreen = 2;
     private int handlerIdDrawImage = 3;
     private int handlerIdDisplayMessage = 4;
 
-    private int REQUEST_CODE_SETTINGS_ACTIVITY = 124357;
-    public static final String EXTRA_EXIT_APP = "exit app extra";
-    private int randomInstanceNumber = -1;
-
-    private String currentDirectory = "not set";
-    private String blankScreenConstant = "blankScreen#+.,.";
+    // For remote communication with the server:
+    private Socket remote;
+    private BufferedReader in;
+    private PrintWriter out;
 
     /** Called when the activity is first created. */
     @Override
@@ -71,6 +86,7 @@ public class NookImageDisplayerActivity extends Activity {
         CustomLog.d("Calling onCreate: " + getCurrentTimeStamp());
         CustomLog.logVersion();
 
+        // Init the UI:
         setContentView(R.layout.main);
         imageView = (ImageView) findViewById(R.id.imageView);
         textView = (TextView) findViewById(R.id.textView);
@@ -78,12 +94,17 @@ public class NookImageDisplayerActivity extends Activity {
 
         globalExit = false;
 
+        // Start the connection to the server:
         PrefsHelper.storeTimestampOfLastConnection(getApplicationContext(), 0);
-        new EstablishConnection().execute();
+        new EstablishConnectionTask().execute();
 
+        // Remove lock screen:
         initWindowFlags();
     }
 
+    /**
+     * Removes the lock screen by setting window flags.
+     */
     private void initWindowFlags() {
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -99,12 +120,17 @@ public class NookImageDisplayerActivity extends Activity {
         CustomLog.d("Calling onResume: " + getCurrentTimeStamp());
         CustomLog.logVersion();
 
+        // Change layout to landscape if is currently portrait:
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
     }
 
+    /**
+     * We do nothing if the configuration changed (e.g. when the screen was rotated). By overwriting the default
+     * implementation we make sure that this activity is not destroyed when the screen rotates.
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -112,11 +138,11 @@ public class NookImageDisplayerActivity extends Activity {
         // Do nothing
     }
 
-    private Socket remote;
-    private BufferedReader in;
-    private PrintWriter out;
-
-    private class EstablishConnection extends AsyncTask<Void, Void, Integer> {
+    /**
+     * Async Task that establishes the connection to the server.
+     * 
+     */
+    private class EstablishConnectionTask extends AsyncTask<Void, Void, Integer> {
 
         private int port = 5060;
         private String server = "10.151.1.121";
@@ -125,6 +151,7 @@ public class NookImageDisplayerActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
 
+            // Use the IP and port that the user set up in the settings screen:
             server = PrefsHelper.getServerIp(getApplicationContext());
             port = PrefsHelper.getServerPort(getApplicationContext());
 
@@ -141,6 +168,9 @@ public class NookImageDisplayerActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
+            // Check if another connections was established shortly before: (this is used to prevent two connections on
+            // one device. It should never happen, as the EstablishConnectionTask is only executed once, but we want to
+            // be sure that nothing wents wrong if this task should have been started twice.)
             long start = System.currentTimeMillis();
             long lastConnection = PrefsHelper.getTimestampOfLastConnection(getApplicationContext());
             boolean haveRecentOtherConnection = start - lastConnection < thresholdBetweenConnectionEstablishingInMs;
@@ -149,6 +179,7 @@ public class NookImageDisplayerActivity extends Activity {
             if (remote == null && !haveRecentOtherConnection) {
 
                 try {
+                    // Save the socket of our newly established server connection:
                     remote = new Socket();
                     SocketAddress socketAddress = new InetSocketAddress(server, port);
                     remote.connect(socketAddress, timeoutForServerConnectionInSeconds * 1000);
@@ -157,10 +188,11 @@ public class NookImageDisplayerActivity extends Activity {
                     CustomLog.d("Successfully connected @ " + formattedTime);
                     in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
                     out = new PrintWriter(remote.getOutputStream(), true);
-                    // Send ID of the client to the server
+                    // Send our client ID to the server:
                     out.write(RemoteMessageIds.MESSAGE_SEND_CLIENT_ID + ":"
                             + PrefsHelper.getClientId(getApplicationContext()) + "\n");
                     out.flush();
+                    // Save the timestamp of this connection to prevent double connections:
                     PrefsHelper.storeTimestampOfLastConnection(getApplicationContext(), System.currentTimeMillis());
                     return 1;
                 } catch (Exception e) {
@@ -194,11 +226,11 @@ public class NookImageDisplayerActivity extends Activity {
             if (result == 1) {
                 // Successfully connected
                 displayMessage("Connection established successfully! Listening for messages.");
-                new ListenForMessages().execute();
+                new ListenForMessagesTask().execute();
             } else if (result == 0) {
                 // Connection timed out
                 if (!globalExit) {
-                    new EstablishConnection().execute();
+                    new EstablishConnectionTask().execute();
                 } else {
                     exitApp("onPostExecute in EstablishConnectionTask");
                 }
@@ -210,7 +242,11 @@ public class NookImageDisplayerActivity extends Activity {
 
     }
 
-    private class ListenForMessages extends AsyncTask<Void, Void, Boolean> {
+    /**
+     * Async task that listens for messages from the server.
+     * 
+     */
+    private class ListenForMessagesTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected void onPreExecute() {
@@ -226,25 +262,31 @@ public class NookImageDisplayerActivity extends Activity {
             while (!finish) {
                 try {
 
+                    // Wait until we receive some data from the server:
                     while (!globalExit && !in.ready()) {
                     }
                     if (!globalExit) {
                         String read = in.readLine();
                         read = read.replaceAll("\n", "");
                         CustomLog.d("read: " + read);
+                        // Check which message code was sent and handle the message:
                         if (read.startsWith(RemoteMessageIds.MESSAGE_EXIT)) {
+                            // Server told as to close the connection:
                             finish = true;
                             String message = "Received exit signal.";
                             CustomLog.d(message);
                             closeServerSocket();
                             break;
                         } else if (read.startsWith(RemoteMessageIds.MESSAGE_SHOW_BLANK_SCREEN)) {
+                            // Show blank screen via handler (we have to use the handler because this current thread
+                            // cannot touch the UI thread):
                             Message m = new Message();
                             m.obj = blankScreenConstant;
                             m.what = handlerIdNextImage;
                             handler.sendMessage(m);
                             CustomLog.d("Starting to display blank screen.");
                         } else if (read.startsWith(RemoteMessageIds.MESSAGE_DISPLAY_IMAGE)) {
+                            // Display the image specified by the message from the server (also via handler):
                             Message m = new Message();
                             String image = read.replace("image:", "");
                             m.obj = image;
@@ -252,13 +294,14 @@ public class NookImageDisplayerActivity extends Activity {
                             handler.sendMessage(m);
                             CustomLog.d("Starting to display image: " + image);
                         } else if (read.startsWith(RemoteMessageIds.MESSAGE_USE_DIRECTORY)) {
+                            // Change the directory in which images are located:
                             String directory = read.replace("directory:", "");
                             currentDirectory = directory;
                             out.write("Set current directory to : " + currentDirectory + "\n");
                             out.flush();
                             CustomLog.d("Set current directory to : " + currentDirectory);
                         } else if (read.startsWith(RemoteMessageIds.MESSAGE_COUNT_IMAGES)) {
-
+                            // Tell the server how many images are in the currently used image directory:
                             String path = Environment.getExternalStorageDirectory().getPath() + "/" + currentDirectory;
                             try {
                                 File file = new File(path);
@@ -314,13 +357,16 @@ public class NookImageDisplayerActivity extends Activity {
             } catch (InterruptedException e) {
             }
             if (!globalExit) {
-                new EstablishConnection().execute();
+                new EstablishConnectionTask().execute();
             } else {
                 exitApp("Exit from ListenForMessagesTask");
             }
         }
     }
 
+    /**
+     * Displays the given text message:
+     */
     private void displayMessage(String message) {
         textView.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.GONE);
@@ -328,6 +374,11 @@ public class NookImageDisplayerActivity extends Activity {
         CustomLog.d(message);
     }
 
+    /**
+     * This handler is used to communicate with the UI thread. It shows images, text messages and blank screens on the
+     * display. For a more detailed explanation about the concept behind the handler read
+     * https://developer.android.com/training/multiple-threads/communicate-ui.html#Handler
+     */
     private Handler handler = new Handler() {
 
         @Override
@@ -341,32 +392,42 @@ public class NookImageDisplayerActivity extends Activity {
             Message m = new Message();
             m.copyFrom(msg);
 
+            // Read the settings that the user setup on the settings screen:
             long msBetweenRedrawing = PrefsHelper.getMsBetweenRedrawing(getApplicationContext());
             int numberOfRedrawSteps = PrefsHelper.getNumberOfRedrawSteps(getApplicationContext());
 
             if (msg.what == handlerIdNextImage) {
+                // First step after we got a request to draw an image. Starts with screen refreshing and
+                // shows the image when all refresh steps were performed.
                 m.arg1 = numberOfRedrawSteps;
                 m.what = handlerIdRefreshScreen;
                 setBackgroundAccordingToNumber(m.arg1);
                 m.arg1 = m.arg1 - 1;
                 handler.sendMessage(m);
             } else if (msg.what == handlerIdRefreshScreen) {
+                // Second step to draw an image: Refresh the screen.
                 if (m.arg1 > 0) {
+                    // Case 1: not enough refresh steps were taken. Alternate the background color and send a new
+                    // message.
                     setBackgroundAccordingToNumber(m.arg1);
                     m.arg1 = m.arg1 - 1;
                     handler.sendMessageDelayed(m, msBetweenRedrawing);
                 } else {
+                    // Case 2: enough refresh steps were taken. Send a message to display the image.
                     m.what = handlerIdDrawImage;
                     handler.sendMessageDelayed(m, msBetweenRedrawing);
                 }
             } else if (msg.what == handlerIdDrawImage) {
+                // Third step to draw the image: Actually draw the image (or a blank screen).
                 String fileName = (String) msg.obj;
                 if (fileName.equalsIgnoreCase(blankScreenConstant)) {
+                    // Show a blank screen:
                     linearLayout.setBackgroundColor(Color.WHITE);
                     out.write("displaying blank screen \n");
                     out.flush();
                     CustomLog.d("Displaying blank screen.");
                 } else {
+                    // Show the image that was specified in the message that came from the server:
                     String path = Environment.getExternalStorageDirectory().getPath() + "/" + fileName;
                     // TODO get path with
                     // http://developer.android.com/reference/android/os/Environment.html#getExternalStorageDirectory()
@@ -375,6 +436,7 @@ public class NookImageDisplayerActivity extends Activity {
 
                     if (out != null) {
                         if (file.exists()) {
+                            // Image exists:
                             Uri imageUri = Uri.parse(path);
                             imageView.setVisibility(View.VISIBLE);
                             imageView.setImageURI(imageUri);
@@ -382,6 +444,7 @@ public class NookImageDisplayerActivity extends Activity {
                             out.flush();
                             CustomLog.d("Displaying image: " + fileName);
                         } else {
+                            // Image does not exit:
                             String printOut = "COULD NOT DISPLAY: " + fileName + "!!!\n";
                             out.write(printOut);
                             out.flush();
@@ -398,6 +461,9 @@ public class NookImageDisplayerActivity extends Activity {
 
     };
 
+    /**
+     * Alternates the background to be black or white.
+     */
     private void setBackgroundAccordingToNumber(int number) {
         if (number % 2 == 0) {
             linearLayout.setBackgroundColor(Color.BLACK);
@@ -412,6 +478,9 @@ public class NookImageDisplayerActivity extends Activity {
         exitApp("Back pressed");
     }
 
+    /**
+     * Closes the remote connection to the server.
+     */
     private void closeServerSocket() {
         if (remote != null) {
             try {
@@ -434,6 +503,9 @@ public class NookImageDisplayerActivity extends Activity {
         }
     }
 
+    /**
+     * @return true if an SD-card is inserted and readable.
+     */
     private boolean isSdReadable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
@@ -447,6 +519,10 @@ public class NookImageDisplayerActivity extends Activity {
         startActivityForResult(i, REQUEST_CODE_SETTINGS_ACTIVITY);
     }
 
+    /**
+     * Handles the result from the settings activity. Kills the app if the user pressed this button on the settings
+     * screen.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -462,6 +538,9 @@ public class NookImageDisplayerActivity extends Activity {
         }
     }
 
+    /**
+     * Closes the app and sets a variable so that all running threads will starve.
+     */
     private void exitApp(String cause) {
         globalExit = true;
         CustomLog.d("App exit initiated... Cause: " + cause);
@@ -476,13 +555,14 @@ public class NookImageDisplayerActivity extends Activity {
     private long lastTimeLogWritten = 0;
 
     /**
-     * Needs permission android.permission.READ_LOGS
+     * This method saves the output of the logcat to the file "logcat_output.txt" on the SD card. Needs permission
+     * android.permission.READ_LOGS
      * */
     @SuppressLint("NewApi")
     public void saveLogcatToFile(Context context) {
         long now = System.currentTimeMillis();
         if (now - lastTimeLogWritten > 10000) {
-            String fileName = "logcat_nook.txt";
+            String fileName = "logcat_output.txt";
             CustomLog.d("Writing log to file: " + fileName);
             try {
                 File outputFile = new File(Environment.getExternalStorageDirectory(), fileName);
