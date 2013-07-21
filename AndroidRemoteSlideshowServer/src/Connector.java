@@ -213,7 +213,7 @@ public class Connector {
             sendMessage(RemoteMessageIds.MESSAGE_DISPLAY_IMAGE, dirName + "/" + imageFileName, client);
             String answer = client.getInputFromClient().readLine();
 
-            if (answer.equals("displaying:" + folderName + "/" + imageFileName)) {
+            if (answer.equals(RemoteMessageIds.MESSAGE_CLIENT_DISPLAYS_IMAGE + ":" + folderName + "/" + imageFileName)) {
                 return true;
             } else {
                 return false;

@@ -11,6 +11,7 @@ public class RemoteMessageIds {
 
     public final static String MESSAGE_USE_DIRECTORY = "directory";
     public final static String MESSAGE_DISPLAY_IMAGE = "image";
+    public final static String MESSAGE_CLIENT_DISPLAYS_IMAGE = "displaying";
     public final static String MESSAGE_COUNT_IMAGES = "showImageCount";
     public final static String MESSAGE_EXIT = "exit";
     public final static String MESSAGE_SEND_CLIENT_ID = "clientId";

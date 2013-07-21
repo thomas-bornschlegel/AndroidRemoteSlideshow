@@ -440,7 +440,7 @@ public class NookImageDisplayerActivity extends Activity {
                             Uri imageUri = Uri.parse(path);
                             imageView.setVisibility(View.VISIBLE);
                             imageView.setImageURI(imageUri);
-                            out.write("displaying:" + fileName + "\n");
+                            out.write(RemoteMessageIds.MESSAGE_CLIENT_DISPLAYS_IMAGE + ":" + fileName + "\n");
                             out.flush();
                             CustomLog.d("Displaying image: " + fileName);
                         } else {
