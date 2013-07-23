@@ -1,4 +1,4 @@
-android-remote-slideshow
+AndroidRemoteSlideshow
 ========================
 
 This project is used at the department of [General Psychology of the University of Bamberg](http://www.uni-bamberg.de/allgpsych/). It is part of a study conducted by [Marius Raab](http://www.uni-bamberg.de/allgpsych/wissenschaftliche-mitarbeiter/marius-raab/). 
@@ -23,16 +23,16 @@ There exists a number of message codes that make the communication between serve
 		<td>clientId</td><td>Sends the ID of the client to the server. Sent from the client to the server. </td><td>1</td>
 	</tr>
 	<tr>
-		<td>directory</td><td>Lets the client use the given foldername from the SD-Card to display images. Sent from the server to the client.</td><td>my_image_folder</td>
+		<td>image</td><td>Makes the client display the image with the given name in the prefixed directory.</td><td>myfolder/mypicture1.png</td>
 	</tr>
 	<tr>
-		<td>image</td><td>Makes the client display the image with the given name from the directory that was setup one message earlier. Sent from the server to the client.</td><td>mypicture1.png</td>
-	</tr>
-	<tr>
-		<td>diplaying</td><td>Confirms that the image in the value part of the message is shown on the client. Sent from the client to the server.</td><td>mypicture1.png</td>
+		<td>diplaying</td><td>Confirms that the image in the value part of the message is shown on the client. Sent from the client to the server.</td><td>myfolder/mypicture1.png</td>
 	</tr>
 	<tr>
 		<td>blankScreen</td><td>Makes the client display a blank screen. Sent from the server to the client. </td><td>NO VALUE</td>
+	</tr>
+	<tr>
+		<td>directory</td><td>Lets the client use the given foldername from the SD-Card to display images. Sent from the server to the client.</td><td>my_image_folder</td>
 	</tr>
 	<tr>
 		<td>showImageCount</td><td>The client responds with a string that contains the number of images in the current directory e.g. "23". Sent from the server to the client.</td><td>NO VALUE</td>
@@ -80,3 +80,17 @@ Run ipconfig on the command line to obtain the IPv4-Address (neccessary for step
 7. Press enter for the next image. You will receive a message and see if the image is displayed on the nook. After you received the message from your Nook on the PC give the nook some time to refresh the screen and display the image. This can take a few seconds. To display the next image press enter again. To quit you can enter "quit" at any time and press enter.
 
 8. After the last image was displayed you can chooose if you want to quit or restart the experiment.
+
+Fix for artefacts bug
+---
+
+*This part is very specific to the environment setup in Bamberg. That's why it is written in German.*
+
+1. Der USB-Port sollte ausgeschaltet sein und die roten Lämpchen an den schwarzen Kästchen der Nooks nicht leuchten.
+2. Bei beiden Nooks den Schalter am schwarzen Kasten umlegen, so dass das rote Lämpchen leuchtet.
+3. Über den USB-Port die Stromverbindung herstellen (Der Port ist direkt mit meinem Laptop verbunden).
+4. Warten bis beide Nooks komplett hochgefahren sind und die Laufwerke am PC gefunden werden.
+5. Für jeden Nook sowohl die SD-Karte, als auch die interne Festplatte des Nooks am PC auswerfen (es sollten 4 externe Festplatten angezeigt werden).
+6. Ein paar Sekunden warten.
+7. Den Java Server starten.
+8. Jetzt können die Bilder durchgeschaltet werden, ohne dass ein Artefakt zu erkennen ist.
